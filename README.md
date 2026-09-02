@@ -19,20 +19,32 @@ cookie persists between launches.
 
 ## Get the APK
 
-The **GitHub Actions workflow builds the signed APK automatically** on every
-push to `main` and on manual dispatch:
+The project ships with a ready-made GitHub Actions pipeline that compiles the
+signed APK in the cloud: **`.github/workflows_ready/build.yml`**. Because the
+automation account that created this repository is not allowed by GitHub to
+commit files under `.github/workflows/`, the file is staged one folder over —
+enabling it takes ~1 minute, two ways:
 
-1. Open the **Actions** tab of this repository.
-2. Click the newest **“Build APK”** run.
-3. Scroll to **Artifacts** → download **`ArenaAI-v1.0.0-signed`**.
-4. Unzip and install `ArenaAI-v1.0.0.apk` on your phone
+**Way 1 — paste it (no settings, works for any repo owner):**
+1. Open the file `.github/workflows_ready/build.yml` in this repo and copy its
+   contents.
+2. Click **Add file → Create new file**, type the path
+   `.github/workflows/build.yml`, paste the contents, commit to `main`.
+3. Open the **Actions** tab → the “Build APK” workflow starts automatically.
+   When green, open the run → **Artifacts** → download
+   `ArenaAI-v1.0.0-signed`, unzip, and install the APK on your phone
    (allow “install unknown apps” when prompted).
 
-To publish an installable **release** (so the in-app “update available”
-notification works): attach the APK to a GitHub Release whose asset name
-ends with `-<versionCode>.apk` (e.g. `ArenaAI-1.0.0-1.apk`). The app checks
-`api.github.com/repos/kfirimcchaki/Arena.ai/releases/latest` at most once per
-day and notifies when a newer build exists.
+**Way 2 — grant the automation app the `Workflows` permission**
+(repo Settings → GitHub Apps/Integrations → configure the app → Workflows:
+Read and write), then tell the developer to finish — the pipeline gets
+committed and triggered for you.
+
+> Publishing an installable **release** (so the in-app “update available”
+> notification works): attach the APK to a GitHub Release whose asset name
+> ends with `-<versionCode>.apk` (e.g. `ArenaAI-1.0.0-1.apk`). The app checks
+> `api.github.com/repos/kfirimcchaki/Arena.ai/releases/latest` at most once
+> per day and notifies when a newer build exists.
 
 ## Build it yourself
 
@@ -83,7 +95,7 @@ app/src/main/java/dev/arena/mobile/   Java sources (pure framework — no deps)
 app/src/main/assets/                   blocklist.txt, cosmetic.js, quick-start page (www/)
 app/src/main/res/                      theme, vector icons, adaptive launcher icon
 gradle/                                wrapper (jar pinned, no network needed)
-.github/workflows/build.yml            APK build + signing + artifact upload
+.github/workflows_ready/build.yml  CI pipeline (enable in 1 min, see README)
 docs/                                  BUILDING, SIGNING, FEATURES, research notes
 scripts/build-apk.sh                   local one-shot build
 ```
