@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>Arena AI — Mobile</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="aurora" aria-hidden="true">
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="orb orb-c"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <main class="wrap">
+    <header class="hero">
+      <div class="brand">
+        <svg class="spark" viewBox="0 0 48 48" aria-hidden="true">
+          <path d="M24 4 C25.8 16.6 31.4 22.2 44 24 C31.4 25.8 25.8 31.4 24 44 C22.2 31.4 16.6 25.8 4 24 C16.6 22.2 22.2 16.6 24 4 Z" fill="url(#g1)"/>
+          <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#38E1FF"/><stop offset="1" stop-color="#7C5CFF"/>
+          </linearGradient></defs>
+        </svg>
+        <div>
+          <h1>Arena <span>AI</span></h1>
+          <p class="tag">Mobile port · the AI frontier in your pocket</p>
+        </div>
+      </div>
+      <p class="greet" id="greet"></p>
+    </header>
+
+    <section class="searchbox">
+      <svg viewBox="0 0 24 24" class="sicon" aria-hidden="true"><path fill="#8B93C4" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg>
+      <input id="search" type="text" placeholder="Search the web — or paste a link" autocomplete="off" spellcheck="false" enterkeyhint="go">
+    </section>
+
+    <section class="quick">
+      <h2>Jump in</h2>
+      <div class="grid" id="grid"></div>
+      <div class="chips" id="chips"></div>
+    </section>
+
+    <footer class="foot">
+      <span id="engine" class="chip">Search: Google</span>
+      <span class="dot">·</span>
+      <span id="version" class="chip">v1.0.0</span>
+      <span class="dot">·</span>
+      <button class="chip link" id="settingsBtn">Settings</button>
+      <p class="fine">arena.ai is an independent service. This app is an unofficial personal client — not affiliated with or endorsed by arena.ai.</p>
+    </footer>
+  </main>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+// Arena Mobile — application module
+
+plugins {
+    id 'com.android.application'
+}
+
+def vc = (rootProject.findProperty('vc') ?: '1') as String
+def vn = (rootProject.findProperty('vn') ?: '1.0.0') as String
+
+android {
+    namespace 'dev.arena.mobile'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'dev.arena.mobile'
+        minSdk 26
+        targetSdk 34
+        versionCode vc.isInteger() ? vc.toInteger() : 1
+        versionName vn
+    }
+
+    signingConfigs {
+        release {
+            // CI or local builds: supply a keystore via env vars (see README -> Signing).
+            def storePath = System.getenv('RELEASE_STORE_FILE')
+            if (storePath != null && new File(storePath).exists()) {
+                storeFile file(storePath)
+                storePassword System.getenv('RELEASE_STORE_PASSWORD') ?: ''
+                keyAlias System.getenv('RELEASE_KEY_ALIAS') ?: ''
+                keyPassword System.getenv('RELEASE_KEY_PASSWORD') ?: ''
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (signingConfigs.release.storeFile != null) {
+                signingConfig signingConfigs.release
+            } else {
+                // No release keystore configured -> sign with the debug key so the APK is
+                // still installable for personal sideloading. Configure a real key for
+                // Play-Store style distribution (docs/SIGNING.md).
+                signingConfig signingConfigs.debug
+            }
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    packaging {
+        resources {
+            excludes += ['META-INF/DEPENDENCIES', 'META-INF/LICENSE*',
+                    'META-INF/NOTICE*', 'META-INF/versions/9/OSGI-INF/MANIFEST.MF']
+        }
+    }
+}
+
+dependencies {
+    // androidx.core brings the battle-tested FileProvider (used to open APK/download
+    // files via content:// URIs). Everything else is pure Android framework + WebView.
+    implementation 'androidx.core:core:1.13.1'
+}
