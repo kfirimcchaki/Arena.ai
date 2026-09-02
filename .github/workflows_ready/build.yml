@@ -1,9 +1,10 @@
 # Arena AI Mobile — APK build pipeline.
 #
 # This sandbox/CI cannot reach Google/Maven hosts directly, so the APK is
-# compiled on GitHub-hosted runners (which can), every time code is pushed
-# to `main` or on manual dispatch. The signed APK is uploaded as a workflow
-# artifact — download it from the Actions tab and sideload it.
+# compiled on GitHub-hosted runners (which can), on every push to `main` or
+# to any `arena/**` branch, and on manual dispatch. The signed APK is
+# uploaded as a workflow artifact — download it from the Actions tab and
+# sideload it.
 #
 # To publish a versioned release (with in-app "update available" prompts),
 # create a GitHub Release and attach the artifact APK to it. The app checks
@@ -13,7 +14,7 @@ name: Build APK
 
 on:
   push:
-    branches: [main]
+    branches: [main, 'arena/**']
   workflow_dispatch:
     inputs:
       versionCode:
