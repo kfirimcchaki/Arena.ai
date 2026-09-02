@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Adaptive icon foreground: spark + orbit dots (108dp artboard, keep inside 66dp safe zone) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- soft ring -->
+    <path
+        android:pathData="M54,26 A28,28 0 1,1 53.9,26 Z"
+        android:strokeColor="#33FFFFFF"
+        android:strokeWidth="2"
+        android:fillColor="#00000000" />
+
+    <!-- 4-point sparkle, center -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,33
+            C56.5,45.5 62.5,51.5 75,54
+            C62.5,56.5 56.5,62.5 54,75
+            C51.5,62.5 45.5,56.5 33,54
+            C45.5,51.5 51.5,45.5 54,33 Z" />
+
+    <!-- orbit dots -->
+    <path android:fillColor="#38E1FF"
+        android:pathData="M36,36 m-4.5,0 a4.5,4.5 0 1,1 9,0 a4.5,4.5 0 1,1 -9,0" />
+    <path android:fillColor="#8B7CFF"
+        android:pathData="M72,38 m-4.5,0 a4.5,4.5 0 1,1 9,0 a4.5,4.5 0 1,1 -9,0" />
+    <path android:fillColor="#FFD166"
+        android:pathData="M70,72 m-4,0 a4,4 0 1,1 8,0 a4,4 0 1,1 -8,0" />
+</vector>

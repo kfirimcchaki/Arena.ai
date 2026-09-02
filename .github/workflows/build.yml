@@ -1,0 +1,96 @@
+# Arena AI Mobile — APK build pipeline.
+#
+# This sandbox/CI cannot reach Google/Maven hosts directly, so the APK is
+# compiled on GitHub-hosted runners (which can), every time code is pushed
+# to `main` or on manual dispatch. The signed APK is uploaded as a workflow
+# artifact — download it from the Actions tab and sideload it.
+#
+# To publish a versioned release (with in-app "update available" prompts),
+# create a GitHub Release and attach the artifact APK to it. The app checks
+# https://api.github.com/repos/kfirimcchaki/Arena.ai/releases/latest.
+
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      versionCode:
+        description: 'Version code (integer)'
+        required: false
+        default: '1'
+      versionName:
+        description: 'Version name (e.g. 1.0.0)'
+        required: false
+        default: '1.0.0'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept SDK licenses
+        run: yes | sdkmanager --licenses >/dev/null 2>&1 || true
+
+      - name: Generate release keystore (fresh per build)
+        id: keystore
+        env:
+          KS_PASS: ${{ secrets.ARENA_SIGN_PASS }}
+        run: |
+          PASS="${KS_PASS:-arena-mobile-$(openssl rand -hex 12)}"
+          keytool -genkeypair -v \
+            -keystore "$RUNNER_TEMP/arena-release.keystore" \
+            -alias arena -keyalg RSA -keysize 2048 -validity 10950 \
+            -storepass "$PASS" -keypass "$PASS" \
+            -dname "CN=Arena Mobile, OU=Mobile, O=Arena Mobile, C=US" \
+            >/dev/null 2>&1
+          echo "pass=$PASS" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve version overrides
+        id: version
+        run: |
+          VC="${{ github.event.inputs.versionCode || '1' }}"
+          VN="${{ github.event.inputs.versionName || '1.0.0' }}"
+          echo "vc=$VC" >> "$GITHUB_OUTPUT"
+          echo "vn=$VN" >> "$GITHUB_OUTPUT"
+
+      - name: Build release APK
+        env:
+          RELEASE_STORE_FILE: ${{ runner.temp }}/arena-release.keystore
+          RELEASE_STORE_PASSWORD: ${{ steps.keystore.outputs.pass }}
+          RELEASE_KEY_ALIAS: arena
+          RELEASE_KEY_PASSWORD: ${{ steps.keystore.outputs.pass }}
+          ORG_GRADLE_PROJECT_vc: ${{ steps.version.outputs.vc }}
+          ORG_GRADLE_PROJECT_vn: ${{ steps.version.outputs.vn }}
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleRelease --no-daemon --stacktrace
+
+      - name: Rename artifact
+        run: |
+          VN="${{ steps.version.outputs.vn }}"
+          cp app/build/outputs/apk/release/app-release.apk \
+             "ArenaAI-v${VN}.apk"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ArenaAI-v${{ steps.version.outputs.vn }}-signed
+          path: ArenaAI-v${{ steps.version.outputs.vn }}.apk
+          if-no-files-found: error
+          retention-days: 90

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>Can't load page</title>
+<style>
+  :root { --bg:#0B0F24; --text:#F4F6FF; --dim:#9AA3D4; --cyan:#38E1FF; --violet:#7C5CFF; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { margin:0; min-height:100%; background:var(--bg); color:var(--text);
+    font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+    display:flex; align-items:center; justify-content:center; text-align:center; }
+  .box { max-width:420px; padding:36px 26px; display:flex; flex-direction:column; gap:14px; align-items:center; }
+  .ring { width:86px; height:86px; border-radius:50%;
+    background:conic-gradient(from 210deg, var(--violet), var(--cyan), transparent 70%);
+    display:grid; place-items:center; animation:spin 3.2s linear infinite;
+    box-shadow:0 0 44px rgba(124,92,255,.35); }
+  .ring > div { width:70px; height:70px; border-radius:50%; background:var(--bg);
+    display:grid; place-items:center; animation:spin 3.2s linear infinite reverse; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  h1 { margin:4px 0 0; font-size:20px; font-weight:700; }
+  p.msg { color:var(--dim); font-size:15px; margin:0; line-height:1.5; }
+  .url { color:#6B739F; font-size:12px; word-break:break-all; max-width:100%;
+    border:1px solid #232B5B; border-radius:12px; padding:8px 12px; background:#0D1230; }
+  .btns { display:flex; gap:10px; margin-top:8px; flex-wrap:wrap; justify-content:center; }
+  button { font-family:inherit; font-size:15px; font-weight:600; color:#fff; cursor:pointer;
+    border:0; border-radius:999px; padding:13px 26px; }
+  .retry { background:linear-gradient(90deg,#7C5CFF,#5E8BFF); }
+  .home { background:transparent; border:1px solid #2A3569; color:#C9CEF2; }
+  button:active { transform:scale(.96); }
+  .code { color:#4A517A; font-size:11px; }
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="ring"><div>
+      <svg width="34" height="34" viewBox="0 0 48 48"><path d="M24 4 C25.8 16.6 31.4 22.2 44 24 C31.4 25.8 25.8 31.4 24 44 C22.2 31.4 16.6 25.8 4 24 C16.6 22.2 22.2 16.6 24 4 Z" fill="#38E1FF"/></svg>
+    </div></div>
+    <h1 id="msg">Couldn't load this page</h1>
+    <p class="url" id="url"></p>
+    <div class="btns">
+      <button class="retry" id="retry">Try again</button>
+      <button class="home" id="home">Go to start page</button>
+    </div>
+    <div class="code" id="code"></div>
+  </div>
+<script>
+  (function () {
+    var q = {};
+    (location.search || "?").replace(/^\?/, "").split("&").forEach(function (kv) {
+      var i = kv.indexOf("=");
+      if (i > -1) q[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1));
+    });
+    var url = q.u || "";
+    if (q.m) document.getElementById("msg").textContent = q.m;
+    if (q.c) document.getElementById("code").textContent = "Error code " + q.c;
+    document.getElementById("url").textContent = url || "about:blank";
+    document.getElementById("url").title = url;
+    document.getElementById("retry").addEventListener("click", function () {
+      if (url) location.href = url; else if (window.ArenaBridge) window.ArenaBridge.goHome();
+    });
+    document.getElementById("home").addEventListener("click", function () {
+      if (window.ArenaBridge) window.ArenaBridge.goHome(); else location.href = "https://arena.ai";
+    });
+  })();
+</script>
+</body>
+</html>

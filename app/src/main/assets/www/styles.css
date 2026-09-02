@@ -1,0 +1,155 @@
+/* Arena AI — Mobile Port start page
+   Deep-space look matching the app chrome. */
+
+:root {
+  --bg: #0B0F24;
+  --bg2: #10153A;
+  --panel: rgba(26, 33, 72, .66);
+  --panel-2: rgba(35, 44, 92, .55);
+  --line: rgba(122, 136, 235, .16);
+  --text: #F4F6FF;
+  --dim: #9AA3D4;
+  --dim2: #6B739F;
+  --violet: #7C5CFF;
+  --cyan: #38E1FF;
+  --amber: #FFD166;
+  --radius: 20px;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+/* ---------------- animated backdrop ---------------- */
+.aurora { position: fixed; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; }
+.orb {
+  position: absolute; border-radius: 50%; filter: blur(70px); opacity: .5;
+  animation: drift 16s ease-in-out infinite alternate;
+}
+.orb-a { width: 55vmax; height: 55vmax; left: -20vmax; top: -22vmax;
+  background: radial-gradient(circle, #4C2EBB 0%, transparent 65%); }
+.orb-b { width: 45vmax; height: 45vmax; right: -18vmax; top: 6vmax;
+  background: radial-gradient(circle, #0E5F86 0%, transparent 65%);
+  animation-delay: -6s; }
+.orb-c { width: 38vmax; height: 38vmax; left: 16vmax; bottom: -24vmax;
+  background: radial-gradient(circle, #7C5CFF 0%, transparent 62%);
+  animation-delay: -11s; opacity: .35; }
+@keyframes drift {
+  from { transform: translate3d(0,0,0) scale(1); }
+  to   { transform: translate3d(4vmax, -3vmax, 0) scale(1.12); }
+}
+.grid-overlay {
+  position: absolute; inset: 0; opacity: .5;
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(140,155,255,.10) 1px, transparent 0);
+  background-size: 34px 34px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,.9), transparent 78%);
+}
+
+/* ---------------- layout ---------------- */
+.wrap {
+  position: relative; z-index: 1;
+  max-width: 640px; margin: 0 auto;
+  padding: 34px 18px 44px;
+  display: flex; flex-direction: column; gap: 22px;
+}
+
+.hero { display: flex; flex-direction: column; gap: 14px; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.spark { width: 46px; height: 46px; filter: drop-shadow(0 4px 18px rgba(124,92,255,.55)); }
+h1 { margin: 0; font-size: 27px; letter-spacing: -.3px; }
+h1 span {
+  background: linear-gradient(90deg, var(--violet), var(--cyan));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.tag { margin: 2px 0 0; color: var(--dim); font-size: 13px; }
+.greet { margin: 0; color: var(--dim); font-size: 13.5px; line-height: 1.5; }
+
+/* ---------------- search ---------------- */
+.searchbox {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--panel); border: 1px solid var(--line);
+  border-radius: 18px; padding: 6px 16px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 10px 34px rgba(4, 6, 24, .45);
+}
+.searchbox:focus-within { border-color: rgba(124,92,255,.65);
+  box-shadow: 0 0 0 3px rgba(124,92,255,.18), 0 10px 34px rgba(4,6,24,.45); }
+.sicon { width: 20px; height: 20px; flex: none; }
+.searchbox input {
+  flex: 1; background: none; border: 0; outline: none;
+  color: var(--text); font-size: 16px; padding: 12px 0;
+}
+.searchbox input::placeholder { color: var(--dim2); }
+
+/* ---------------- tiles ---------------- */
+.quick h2 { font-size: 12px; letter-spacing: .14em; color: var(--dim2); margin: 2px 0 12px;
+  text-transform: uppercase; font-weight: 600; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+@media (min-width: 520px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+.tile {
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 16px 14px 14px; border-radius: var(--radius);
+  background: var(--panel-2); border: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+  cursor: pointer; user-select: none;
+  transition: transform .12s ease, border-color .2s, background .2s;
+  animation: rise .5s ease both;
+}
+.tile:nth-child(2) { animation-delay: .04s; }
+.tile:nth-child(3) { animation-delay: .08s; }
+.tile:nth-child(4) { animation-delay: .12s; }
+.tile:nth-child(5) { animation-delay: .16s; }
+.tile:nth-child(6) { animation-delay: .2s; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
+
+.tile:active { transform: scale(.965); }
+.tile:hover { border-color: rgba(124,92,255,.6); }
+.tile .ico {
+  width: 40px; height: 40px; border-radius: 13px;
+  display: grid; place-items: center;
+  background: linear-gradient(145deg, rgba(124,92,255,.28), rgba(56,225,255,.14));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.07);
+}
+.tile .ico svg { width: 22px; height: 22px; }
+.tile .t { font-size: 15px; font-weight: 600; }
+.tile .d { font-size: 12px; color: var(--dim); line-height: 1.4; margin-top: -4px; }
+
+.arrow { margin-left: auto; color: var(--dim2); font-size: 13px; align-self: flex-end; }
+
+/* ---------------- chips ---------------- */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.chipbtn {
+  font-family: inherit; font-size: 12.5px; font-weight: 600;
+  color: var(--dim); background: rgba(26, 33, 72, .5);
+  border: 1px solid var(--line); border-radius: 999px;
+  padding: 7px 14px; cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+.chipbtn:active { transform: scale(.95); color: var(--text); }
+
+/* ---------------- footer ---------------- */
+.foot {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+  justify-content: center; color: var(--dim2); font-size: 12px;
+}
+.dot { opacity: .6; }
+.chip {
+  padding: 5px 12px; border-radius: 999px;
+  border: 1px solid var(--line); background: rgba(26,33,72,.5);
+  color: var(--dim);
+}
+.chip.link { color: var(--cyan); font-weight: 600; cursor: pointer; font-size: 12px;
+  font-family: inherit; }
+.chip.link:active { transform: scale(.96); }
+.fine { width: 100%; text-align: center; color: var(--dim2); font-size: 11px;
+  line-height: 1.6; margin: 8px 0 0; opacity: .85; }
